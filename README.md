@@ -21,8 +21,8 @@ match the keys of the internal environment variable map object (see example).
 
     envtpl [-o|--output outfile] [template]
 
-If `template` is not provided, `envtpl` reads from `stdin`
-If `outfile` is not provide, `envtpl` writes to `stdout`
+* If `template` is not provided, `envtpl` reads from `stdin`.
+* If `outfile` is not provide, `envtpl` writes to `stdout`.
 
 ## Example
 

@@ -14,7 +14,8 @@ Despite the difference between `Jinja` and `Go` templates, an attempt was made
 to match the command line syntax of the original `envtpl`.
 
 The biggest obvious difference is that `Go` template variables represent a path within
-a data context, so they need to be prepended with leading `.`.
+a data context, so `envtpl` variables will need to be prepended with a leading `.` to
+match the keys of the internal environment variable map object (see example).
 
 ## Usage
 
@@ -45,3 +46,4 @@ Render the template (assume $USER is 'mary')
 [Go templates]: https://golang.org/pkg/text/template/
 [Jinja2]:       http://jinja.pocoo.org/docs/dev/
 [njx]:          https://github.com/subfuzion/njx
+

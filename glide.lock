@@ -1,0 +1,14 @@
+hash: 4f2415d864f0be33020bf8782fcd9acb07de8d22b4a1681ab408ec729cb60e49
+updated: 2016-06-01T16:36:36.665265751-07:00
+imports:
+- name: github.com/aokoli/goutils
+  version: 9c37978a95bd5c709a15883b6242714ea6709e64
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/Masterminds/sprig
+  version: d3358881dd971b4afb66769e825be2599cd14c7b
+- name: github.com/spf13/cobra
+  version: f368244301305f414206f889b1735a54cfc8bde8
+- name: github.com/spf13/pflag
+  version: cb88ea77998c3f024757528e3305022ab50b43be
+devImports: []

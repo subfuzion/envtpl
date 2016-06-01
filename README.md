@@ -44,7 +44,7 @@ Render the template (assume the value of `$USER` is 'mary')
 
 ## License
 
-[MIT](https://github.com/subfuzion/envtpl)
+[MIT](https://raw.githubusercontent.com/subfuzion/envtpl/master/LICENSE)
 
 
 [envtpl]:       https://github.com/andreasjansson/envtpl

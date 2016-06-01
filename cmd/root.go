@@ -38,7 +38,7 @@ var RootCmd = &cobra.Command{
 			checkError(err)
 		}
 
-    // get environment variables to supply to the template
+		// get environment variables to supply to the template
 		env := readEnv()
 
 		// get writer for rendered output; if an output file is not
@@ -53,7 +53,7 @@ var RootCmd = &cobra.Command{
 			w = os.Stdout
 		}
 
-    // render the template
+		// render the template
 		err := t.Execute(w, env)
 		checkError(err)
 	},

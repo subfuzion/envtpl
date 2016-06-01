@@ -44,8 +44,8 @@ Render the template (assume the value of `$USER` is 'mary')
 
 ## Template Functions
 
-In addition to the small set of template functions that come standard with Go, `envtpl` also
-incorporates [sprig] for additional, commonly used functions.
+In addition to the [standard set of template actions and functions][standard-templates]
+that come with Go, `envtpl` also incorporates [sprig] for additional, commonly used functions.
 
 For example:
 
@@ -89,3 +89,4 @@ I'm inspired by [arschles/envtpl] to add ~~[sprig] support for extended template
 [mattrobenolt/envtpl]: https://github.com/mattrobenolt/envtpl
 [njx]:                 https://github.com/subfuzion/njx
 [sprig]:               https://github.com/Masterminds/sprig
+[standard-templates]:  https://golang.org/pkg/text/template/

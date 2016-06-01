@@ -42,6 +42,14 @@ Render the template (assume the value of `$USER` is 'mary')
 
     cat greeting.tpl | envtpl > out.txt  # writes "Hello mary" to out.txt
 
+## Building the envtpl executable
+
+The `build.sh` script can be used to build the `envtpl` executable. If you provide
+the `alpine` argument, it will build a binary for Alpine Linux. This build script
+is intended for Docker workflows; it does not require Go support, only Docker.
+It will create an image called `build-envtpl` that has the Go support necessary to
+perform the build steps to create the executable.
+
 ## License
 
 [MIT](https://raw.githubusercontent.com/subfuzion/envtpl/master/LICENSE)

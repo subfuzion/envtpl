@@ -42,6 +42,9 @@ Render the template (assume the value of `$USER` is 'mary')
 
     cat greeting.tpl | envtpl > out.txt  # writes "Hello mary" to out.txt
 
+## License
+
+[MIT](https://github.com/subfuzion/envtpl)
 
 
 [envtpl]:       https://github.com/andreasjansson/envtpl

@@ -42,6 +42,15 @@ Render the template (assume the value of `$USER` is 'mary')
 
     cat greeting.tpl | envtpl > out.txt  # writes "Hello mary" to out.txt
 
+## Template Functions
+
+In addition to the small set of template functions that come standard with Go, `envtpl` also
+incorporates [sprig] for additional, commonly used functions.
+
+For example:
+
+    echo "Greetings, {{.USER | title}}" | envtpl  # writes "Greetings, Mary" to stdout
+
 ## Building the envtpl executable
 
 The `build.sh` script can be used to build the `envtpl` executable. If you provide
@@ -65,7 +74,7 @@ I haven't spent any time evaluating either yet. However, [mattrobenolt/envtpl] l
 
 Neither of these two packages appear to conform to the original `envtpl` command line syntax, which was one of my goals, although I don't think this is a big deal since all of these spin-off versions use an entirely different template syntax anyway. However, at first glance at least, this variant does offer more input/output options modeled after the original.
 
-I'm inspired by [arschles/envtpl] to add [sprig] support for extended template functions, potentially [glide] support, and definitely tests.
+I'm inspired by [arschles/envtpl] to add ~~[sprig] support for extended template functions~~, potentially [glide] support, and definitely tests. This version now has [sprig] template support also (credit to [arschles/envtpl]).
 
 ## License
 

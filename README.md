@@ -21,8 +21,8 @@ match the keys of the internal environment variable map object (see example).
 
     envtpl [-o|--output outfile] [template]
 
-* If `template` is not provided, `envtpl` reads from `stdin`.
-* If `outfile` is not provide, `envtpl` writes to `stdout`.
+* If `template` is not provided, `envtpl` reads from `stdin`
+* If `outfile` is not provide, `envtpl` writes to `stdout`
 
 ## Example
 
@@ -30,11 +30,13 @@ match the keys of the internal environment variable map object (see example).
 
     Hello {{.USER}}
 
-Render the template (assume $USER is 'mary')
+Render the template (assume the value of `$USER` is 'mary')
 
     envtpl greeting.tpl  # writes "Hello mary" to stdout
 
     USER=bob envtpl greeting.tpl  # overrides "mary" and writes "Hello bob" to stdout
+
+    echo "greetings {{.USER}}" | envtpl  $ writes "greetings mary" to stdout
 
     envtpl < greeting.tpl > out.txt  # writes "Hello mary" to out.txt
 
@@ -46,4 +48,3 @@ Render the template (assume $USER is 'mary')
 [Go templates]: https://golang.org/pkg/text/template/
 [Jinja2]:       http://jinja.pocoo.org/docs/dev/
 [njx]:          https://github.com/subfuzion/njx
-

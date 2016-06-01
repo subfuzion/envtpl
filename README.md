@@ -63,7 +63,9 @@ A search for similar Go-based tools shows the following:
 
 I haven't spent any time evaluating either yet. However, [mattrobenolt/envtpl] looks elegantly simple and [arschles/envtpl] offers tests, [glide] package management support and more template functionality using [sprig].
 
-Neither of these two packages appear to conform to the original `envtpl` command line syntax, which was one of my goals, although I don't think this is a big deal since all of these spin-off versions use an entirely different template syntax anyway. I'm inspired to add [sprig] support like [arschles/envtpl] (and potentially [glide] support as well), and definitely plan to add tests. 
+Neither of these two packages appear to conform to the original `envtpl` command line syntax, which was one of my goals, although I don't think this is a big deal since all of these spin-off versions use an entirely different template syntax anyway. However, at first glance at least, this variant does offer more input/output options modeled after the original.
+
+I'm inspired by [arschles/envtpl] to add [sprig] support for extended template functions, potentially [glide] support, and definitely tests. 
 
 ## License
 

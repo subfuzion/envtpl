@@ -36,7 +36,7 @@ Render the template (assume the value of `$USER` is 'mary')
 
     USER=bob envtpl greeting.tpl  # overrides "mary" and writes "Hello bob" to stdout
 
-    echo "greetings {{.USER}}" | envtpl  $ writes "greetings mary" to stdout
+    echo "greetings {{.USER}}" | envtpl  # writes "greetings mary" to stdout
 
     envtpl < greeting.tpl > out.txt  # writes "Hello mary" to out.txt
 

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/Masterminds/sprig"
 	"github.com/spf13/cobra"
 )
 
@@ -69,11 +70,11 @@ func init() {
 }
 
 func parse(s string) (*template.Template, error) {
-  return template.New("").Parse(s)
+  return template.New("").Funcs(sprig.TxtFuncMap()).Parse(s)
 }
 
 func parseFiles(files ...string) (*template.Template, error) {
-  return template.New(filepath.Base(files[0])).ParseFiles(files...)
+  return template.New(filepath.Base(files[0])).Funcs(sprig.TxtFuncMap()).ParseFiles(files...)
 }
 
 func readEnv() (env map[string]string) {

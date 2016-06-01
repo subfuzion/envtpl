@@ -56,7 +56,7 @@ As mentioned above, this tool was inspired by the original [envtpl] project and
 motivated to provide something similar without adding a Python dependency to
 Docker base images.
 
-A search for similar Go-based tools shows the following:
+A search for similar Go-based tools turns up the following:
 
  * [mattrobenolt/envtpl]
  * [arschles/envtpl]
@@ -65,7 +65,7 @@ I haven't spent any time evaluating either yet. However, [mattrobenolt/envtpl] l
 
 Neither of these two packages appear to conform to the original `envtpl` command line syntax, which was one of my goals, although I don't think this is a big deal since all of these spin-off versions use an entirely different template syntax anyway. However, at first glance at least, this variant does offer more input/output options modeled after the original.
 
-I'm inspired by [arschles/envtpl] to add [sprig] support for extended template functions, potentially [glide] support, and definitely tests. 
+I'm inspired by [arschles/envtpl] to add [sprig] support for extended template functions, potentially [glide] support, and definitely tests.
 
 ## License
 
@@ -80,4 +80,3 @@ I'm inspired by [arschles/envtpl] to add [sprig] support for extended template f
 [mattrobenolt/envtpl]: https://github.com/mattrobenolt/envtpl
 [njx]:                 https://github.com/subfuzion/njx
 [sprig]:               https://github.com/Masterminds/sprig
-

@@ -57,6 +57,8 @@ The `build.sh` script can be used to build the `envtpl` executable. If you provi
 the `alpine` argument, it will build a binary for Alpine Linux. This build script
 is intended for Docker workflows; it does not require Go support, only Docker.
 
+## Building an envtpl Docker image
+
 The provided `Dockerfile` can be used to create an image for `envtpl`. It will
 copy `envtpl` from the repo directory that was built by `build.sh`.
 Because the `Dockerfile` is based on the `alpine` image, be sure to first build

@@ -51,7 +51,7 @@ For example:
 
     echo "Greetings, {{.USER | title}}" | envtpl  # writes "Greetings, Mary" to stdout
 
-## Building the envtpl executable
+## Building an envtpl executable
 
 The `build.sh` script can be used to build the `envtpl` executable. If you provide
 the `alpine` argument, it will build a binary for Alpine Linux. This build script

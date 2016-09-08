@@ -51,6 +51,8 @@ For example:
 
     echo "Greetings, {{.USER | title}}" | envtpl  # writes "Greetings, Mary" to stdout
 
+In the example, the environment name of the user `mary` is converted to `Mary` by the `title` template function.
+
 ## Building an envtpl executable
 
 The `make.sh` script can be used to build the `envtpl` executable. If you provide

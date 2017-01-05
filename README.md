@@ -8,7 +8,7 @@ It is directly inspired by the original [envtpl], a Python tool for rendering
 This port was motivated by the desire to add templating support for template-driven
 configuration files that needed to be part of a base Docker image without also
 requiring the installation of Python. For the same reason, I decided not to add
-variable support to my previous template utility based on Node.js, [njx].
+variable support to my previous template utility [njx], which depends on Node.js.
 
 Despite the difference between `Jinja` and `Go` templates, an attempt was made
 to match the command line syntax of the original `envtpl`.

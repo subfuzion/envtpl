@@ -53,12 +53,13 @@ String Functions
 	- contains: strings.Contains, but with the arguments switched: `contains substr str`. (This simplifies common pipelines)
 	- hasPrefix: strings.hasPrefix, but with the arguments switched
 	- hasSuffix: strings.hasSuffix, but with the arguments switched
-	- quote: Wrap string(s) in double quotation marks.
-	- squote: Wrap string(s) in double quotation marks.
+	- quote: Wrap string(s) in double quotation marks, escape the contents by adding '\' before '"'.
+	- squote: Wrap string(s) in double quotation marks, does not escape content.
 	- cat: Concatenate strings, separating them by spaces. `cat $a $b $c`.
 	- indent: Indent a string using space characters. `indent 4 "foo\nbar"` produces "    foo\n    bar"
 	- replace: Replace an old with a new in a string: `$name | replace " " "-"`
 	- plural: Choose singular or plural based on length: `len $fish | plural "one anchovy" "many anchovies"`
+	- sha256sum: Generate a hex encoded sha256 hash of the input
 
 String Slice Functions:
 
@@ -78,7 +79,9 @@ Integer Slice Functions:
 Conversions:
 
 	- atoi: Convert a string to an integer. 0 if the integer could not be parsed.
-	- toInt64: Convert a string or another numeric type to an int64.
+	- in64: Convert a string or another numeric type to an int64.
+	- int: Convert a string or another numeric type to an int.
+	- float64: Convert a string or another numeric type to a float64.
 
 Defaults:
 
@@ -95,6 +98,14 @@ Defaults:
 OS:
 	- env: Resolve an environment variable
 	- expandenv: Expand a string through the environment
+
+File Paths:
+	- base: Return the last element of a path. https://golang.org/pkg/path#Base
+	- dir: Remove the last element of a path. https://golang.org/pkg/path#Dir
+	- clean: Clean a path to the shortest equivalent name.  (e.g. remove "foo/.."
+	from "foo/../bar.html") https://golang.org/pkg/path#Clean
+	- ext: https://golang.org/pkg/path#Ext
+	- isAbs: https://golang.org/pkg/path#IsAbs
 
 Encoding:
 	- b64enc: Base 64 encode a string.
@@ -132,6 +143,13 @@ Data Structures:
 	  follows: []byte are converted, fmt.Stringers will have String() called.
 	  errors will have Error() called. All others will be passed through
 	  fmt.Sprtinf("%v").
+	- set: Takes a dict, a key, and a value, and sets that key/value pair in
+	  the dict. `set $dict $key $value`. For convenience, it returns the dict,
+	  even though the dict was modified in place.
+	- unset: Takes a dict and a key, and deletes that key/value pair from the
+	  dict. `unset $dict $key`. This returns the dict for convenience.
+	- hasKey: Takes a dict and a key, and returns boolean true if the key is in
+	  the dict.
 
 Math Functions:
 
@@ -164,16 +182,19 @@ import (
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/asn1"
 	"encoding/base32"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/pem"
 	"fmt"
 	"html/template"
 	"math"
 	"math/big"
 	"os"
+	"path"
 	"reflect"
 	"strconv"
 	"strings"
@@ -181,6 +202,7 @@ import (
 	"time"
 
 	util "github.com/aokoli/goutils"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Produce the function map.
@@ -239,6 +261,7 @@ var nonhermeticFunctions = []string{
 	"randAlpha",
 	"randAscii",
 	"randNumeric",
+	"uuidv4",
 
 	// OS
 	"env",
@@ -295,10 +318,13 @@ var genericMap = map[string]interface{}{
 	"indent":    indent,
 	"replace":   replace,
 	"plural":    plural,
+	"sha256sum": sha256sum,
 
 	// Wrap Atoi to stop errors.
-	"atoi":  func(a string) int { i, _ := strconv.Atoi(a); return i },
-	"int64": toInt64,
+	"atoi":    func(a string) int { i, _ := strconv.Atoi(a); return i },
+	"int64":   toInt64,
+	"int":     toInt,
+	"float64": toFloat64,
 
 	//"gt": func(a, b int) bool {return a > b},
 	//"gte": func(a, b int) bool {return a >= b},
@@ -353,6 +379,13 @@ var genericMap = map[string]interface{}{
 	"env":       func(s string) string { return os.Getenv(s) },
 	"expandenv": func(s string) string { return os.ExpandEnv(s) },
 
+	// File Paths:
+	"base":  path.Base,
+	"dir":   path.Dir,
+	"clean": path.Clean,
+	"ext":   path.Ext,
+	"isAbs": path.IsAbs,
+
 	// Encoding:
 	"b64enc": base64encode,
 	"b64dec": base64decode,
@@ -360,11 +393,17 @@ var genericMap = map[string]interface{}{
 	"b32dec": base32decode,
 
 	// Data Structures:
-	"tuple": tuple,
-	"dict":  dict,
+	"tuple":  tuple,
+	"dict":   dict,
+	"set":    set,
+	"unset":  unset,
+	"hasKey": hasKey,
 
 	// Crypto:
 	"genPrivateKey": generatePrivateKey,
+
+	// UUIDs:
+	"uuidv4": uuidv4,
 }
 
 func split(sep, orig string) map[string]string {
@@ -604,7 +643,7 @@ func untitle(str string) string {
 func quote(str ...interface{}) string {
 	out := make([]string, len(str))
 	for i, s := range str {
-		out[i] = fmt.Sprintf("\"%v\"", s)
+		out[i] = fmt.Sprintf("%q", strval(s))
 	}
 	return strings.Join(out, " ")
 }
@@ -619,6 +658,21 @@ func squote(str ...interface{}) string {
 
 func tuple(v ...interface{}) []interface{} {
 	return v
+}
+
+func set(d map[string]interface{}, key string, value interface{}) map[string]interface{} {
+	d[key] = value
+	return d
+}
+
+func unset(d map[string]interface{}, key string) map[string]interface{} {
+	delete(d, key)
+	return d
+}
+
+func hasKey(d map[string]interface{}, key string) bool {
+	_, ok := d[key]
+	return ok
 }
 
 func dict(v ...interface{}) map[string]interface{} {
@@ -650,9 +704,43 @@ func strval(v interface{}) string {
 	}
 }
 
+// toFloat64 converts 64-bit floats
+func toFloat64(v interface{}) float64 {
+	if str, ok := v.(string); ok {
+		iv, err := strconv.ParseFloat(str, 64)
+		if err != nil {
+			return 0
+		}
+		return iv
+	}
+
+	val := reflect.Indirect(reflect.ValueOf(v))
+	switch val.Kind() {
+	case reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64, reflect.Int:
+		return float64(val.Int())
+	case reflect.Uint8, reflect.Uint16, reflect.Uint32:
+		return float64(val.Uint())
+	case reflect.Uint, reflect.Uint64:
+		return float64(val.Uint())
+	case reflect.Float32, reflect.Float64:
+		return val.Float()
+	case reflect.Bool:
+		if val.Bool() == true {
+			return 1
+		}
+		return 0
+	default:
+		return 0
+	}
+}
+
+func toInt(v interface{}) int {
+	//It's not optimal. Bud I don't want duplicate toInt64 code.
+	return int(toInt64(v))
+}
+
 // toInt64 converts integer types to 64-bit integers
 func toInt64(v interface{}) int64 {
-
 	if str, ok := v.(string); ok {
 		iv, err := strconv.ParseInt(str, 10, 64)
 		if err != nil {
@@ -766,6 +854,11 @@ func plural(one, many string, count int) string {
 	return many
 }
 
+func sha256sum(input string) string {
+	hash := sha256.Sum256([]byte(input))
+	return hex.EncodeToString(hash[:])
+}
+
 func until(count int) []int {
 	step := 1
 	if count < 0 {
@@ -794,4 +887,9 @@ func untilStep(start, stop, step int) []int {
 		v = append(v, i)
 	}
 	return v
+}
+
+// uuidv4 provides a safe and secure UUID v4 implementation
+func uuidv4() string {
+	return fmt.Sprintf("%s", uuid.NewV4())
 }

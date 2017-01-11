@@ -42,6 +42,8 @@ Render the template (assume the value of `$USER` is 'mary')
 
     cat greeting.tpl | envtpl > out.txt  # writes "Hello mary" to out.txt
 
+`test/test.tpl` tests conditional functions as well as loop on environment variables. the `test/test/sh` script compares the output of envtpl with the expected output and can be used as unit test.
+
 ## Template Functions
 
 In addition to the [standard set of template actions and functions][standard-templates]
@@ -53,11 +55,21 @@ For example:
 
 In the example, the environment name of the user `mary` is converted to `Mary` by the `title` template function.
 
+### Other functions
+
+To mimic the environment function for the original envtpl, an `environment` function allows to filter the environment with a prefix string
+
+    {{ range $key, $value := environment "TAG_"  }}{{ $key }}="{{ $value }}"{{ end }}
+
+filters all environment variables starting with TAG_.
+
 ## Building an envtpl executable
 
 The `make.sh` script can be used to build the `envtpl` executable. If you provide
 the `alpine` argument, it will build a binary for Alpine Linux. This build script
 is intended for Docker workflows; it does not require Go support, only Docker.
+
+To build it for another system, export the GOOS and GOARCH environment variables.
 
 ## Building an envtpl Docker image
 

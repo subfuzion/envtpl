@@ -12,6 +12,7 @@ import (
 	"text/template"
 
 	"github.com/aokoli/goutils"
+	"github.com/stretchr/testify/assert"
 )
 
 // This is woefully incomplete. Please help.
@@ -33,6 +34,10 @@ func TestTrunc(t *testing.T) {
 func TestQuote(t *testing.T) {
 	tpl := `{{quote "a" "b" "c"}}`
 	if err := runt(tpl, `"a" "b" "c"`); err != nil {
+		t.Error(err)
+	}
+	tpl = `{{quote "\"a\"" "b" "c"}}`
+	if err := runt(tpl, `"\"a\"" "b" "c"`); err != nil {
 		t.Error(err)
 	}
 	tpl = `{{quote 1 2 3 }}`
@@ -148,6 +153,42 @@ func TestDefault(t *testing.T) {
 	}
 }
 
+func TestToFloat64(t *testing.T) {
+	target := float64(102)
+	if target != toFloat64(int8(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toFloat64(int(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toFloat64(int32(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toFloat64(int16(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toFloat64(int64(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toFloat64("102") {
+		t.Errorf("Expected 102")
+	}
+	if 0 != toFloat64("frankie") {
+		t.Errorf("Expected 0")
+	}
+	if target != toFloat64(uint16(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toFloat64(uint64(102)) {
+		t.Errorf("Expected 102")
+	}
+	if 102.1234 != toFloat64(float64(102.1234)) {
+		t.Errorf("Expected 102.1234")
+	}
+	if 1 != toFloat64(true) {
+		t.Errorf("Expected 102")
+	}
+}
 func TestToInt64(t *testing.T) {
 	target := int64(102)
 	if target != toInt64(int8(102)) {
@@ -185,6 +226,43 @@ func TestToInt64(t *testing.T) {
 	}
 }
 
+func TestToInt(t *testing.T) {
+	target := int(102)
+	if target != toInt(int8(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toInt(int(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toInt(int32(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toInt(int16(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toInt(int64(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toInt("102") {
+		t.Errorf("Expected 102")
+	}
+	if 0 != toInt("frankie") {
+		t.Errorf("Expected 0")
+	}
+	if target != toInt(uint16(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toInt(uint64(102)) {
+		t.Errorf("Expected 102")
+	}
+	if target != toInt(float64(102.1234)) {
+		t.Errorf("Expected 102")
+	}
+	if 1 != toInt(true) {
+		t.Errorf("Expected 102")
+	}
+}
+
 func TestEmpty(t *testing.T) {
 	tpl := `{{if empty 1}}1{{else}}0{{end}}`
 	if err := runt(tpl, "0"); err != nil {
@@ -205,6 +283,16 @@ func TestEmpty(t *testing.T) {
 	}
 	tpl = `{{if empty false}}1{{else}}0{{end}}`
 	if err := runt(tpl, "1"); err != nil {
+		t.Error(err)
+	}
+
+	dict := map[string]interface{}{"top": map[string]interface{}{}}
+	tpl = `{{if empty .top.NoSuchThing}}1{{else}}0{{end}}`
+	if err := runtv(tpl, "1", dict); err != nil {
+		t.Error(err)
+	}
+	tpl = `{{if empty .bottom.NoSuchThing}}1{{else}}0{{end}}`
+	if err := runtv(tpl, "1", dict); err != nil {
 		t.Error(err)
 	}
 }
@@ -406,6 +494,13 @@ func TestPlural(t *testing.T) {
 	}
 }
 
+func TestSha256Sum(t *testing.T) {
+	tpl := `{{"abc" | sha256sum}}`
+	if err := runt(tpl, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestTuple(t *testing.T) {
 	tpl := `{{$t := tuple 1 "a" "foo"}}{{index $t 2}}{{index $t 0 }}{{index $t 1}}`
 	if err := runt(tpl, "foo1a"); err != nil {
@@ -438,6 +533,43 @@ func TestDict(t *testing.T) {
 	}
 }
 
+func TestUnset(t *testing.T) {
+	tpl := `{{- $d := dict "one" 1 "two" 222222 -}}
+	{{- $_ := unset $d "two" -}}
+	{{- range $k, $v := $d}}{{$k}}{{$v}}{{- end -}}
+	`
+
+	expect := "one1"
+	if err := runt(tpl, expect); err != nil {
+		t.Error(err)
+	}
+}
+func TestHasKey(t *testing.T) {
+	tpl := `{{- $d := dict "one" 1 "two" 222222 -}}
+	{{- if hasKey $d "one" -}}1{{- end -}}
+	`
+
+	expect := "1"
+	if err := runt(tpl, expect); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestSet(t *testing.T) {
+	tpl := `{{- $d := dict "one" 1 "two" 222222 -}}
+	{{- $_ := set $d "two" 2 -}}
+	{{- $_ := set $d "three" 3 -}}
+	{{- if hasKey $d "one" -}}{{$d.one}}{{- end -}}
+	{{- if hasKey $d "two" -}}{{$d.two}}{{- end -}}
+	{{- if hasKey $d "three" -}}{{$d.three}}{{- end -}}
+	`
+
+	expect := "123"
+	if err := runt(tpl, expect); err != nil {
+		t.Error(err)
+	}
+}
+
 func TestUntil(t *testing.T) {
 	tests := map[string]string{
 		`{{range $i, $e := until 5}}{{$i}}{{$e}}{{end}}`:   "0011223344",
@@ -465,6 +597,27 @@ func TestUntilStep(t *testing.T) {
 		}
 	}
 
+}
+
+func TestBase(t *testing.T) {
+	assert.NoError(t, runt(`{{ base "foo/bar" }}`, "bar"))
+}
+
+func TestDir(t *testing.T) {
+	assert.NoError(t, runt(`{{ dir "foo/bar/baz" }}`, "foo/bar"))
+}
+
+func TestIsAbs(t *testing.T) {
+	assert.NoError(t, runt(`{{ isAbs "/foo" }}`, "true"))
+	assert.NoError(t, runt(`{{ isAbs "foo" }}`, "false"))
+}
+
+func TestClean(t *testing.T) {
+	assert.NoError(t, runt(`{{ clean "/foo/../foo/../bar" }}`, "/bar"))
+}
+
+func TestExt(t *testing.T) {
+	assert.NoError(t, runt(`{{ ext "/foo/bar/baz.txt" }}`, ".txt"))
 }
 
 func TestDelete(t *testing.T) {
@@ -526,6 +679,27 @@ func TestGenPrivateKey(t *testing.T) {
 	out, err = runRaw(tpl, nil)
 	if err != nil {
 		t.Error(err)
+	}
+}
+
+func TestUUIDGeneration(t *testing.T) {
+	tpl := `{{uuidv4}}`
+	out, err := runRaw(tpl, nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(out) != 36 {
+		t.Error("Expected UUID of length 36")
+	}
+
+	out2, err := runRaw(tpl, nil)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if out == out2 {
+		t.Error("Expected subsequent UUID generations to be different")
 	}
 }
 

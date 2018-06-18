@@ -1,3 +1,7 @@
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/subfuzion/envtpl.svg)](https://hub.docker.com/r/subfuzion/envtpl/)
+
+
 # envtpl
 
 `envtpl` renders [Go templates] on the command line using environment variables.
@@ -73,10 +77,15 @@ To build it for another system, export the GOOS and GOARCH environment variables
 
 ## Building an envtpl Docker image
 
+
+[![Docker Build Status](https://img.shields.io/docker/build/subfuzion/envtpl.svg)](https://hub.docker.com/r/subfuzion/envtpl/)
+
 `build.sh` can be used to create an image for `envtpl` using the provided `Dockerfile`.
 It copies the `envtpl` binary from the repo directory after building it with `make.sh`.
 Because the `Dockerfile` is based on the `alpine` image, be sure to first build
 an executable for Alpine with the `alpine` option (`./build.sh alpine`).
+
+An image is available on Docker Hub [subfuzion/envtpl](https://hub.docker.com/r/subfuzion/envtpl/)
 
 ## Similar Tools
 

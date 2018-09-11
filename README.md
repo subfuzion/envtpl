@@ -23,10 +23,17 @@ match the keys of the internal environment variable map object (see example).
 
 ## Usage
 
-    envtpl [-o|--output outfile] [template]
+    envtpl [-o|--output outfile] [-m|--missing option] [template]
 
 * If `template` is not provided, `envtpl` reads from `stdin`
-* If `outfile` is not provide, `envtpl` writes to `stdout`
+* If `outfile` is not provided, `envtpl` writes to `stdout`
+* If `missing` is unset, `envtpl` follows the default behavior of
+  [the golang template library](https://golang.org/pkg/text/template/#Template.Option)
+  and missing keys in the template will be filled in with the string
+  `<no value>`.  If `missing` is set to `zero`, missing keys will be
+  filled in with the zero value for their data type (ie: an empty
+  string).  If `missing` is set to `error`, `envtpl` will fail and
+  an error returned to the caller.
 
 ## Example
 
@@ -45,6 +52,12 @@ Render the template (assume the value of `$USER` is 'mary')
     envtpl < greeting.tpl > out.txt  # writes "Hello mary" to out.txt
 
     cat greeting.tpl | envtpl > out.txt  # writes "Hello mary" to out.txt
+
+    unset USER; envtpl greeting.tpl  # writes "Hello <no value>" to stdout
+
+    unset USER; envtpl -m zero greeting.tpl  # writes "Hello " to stdout
+
+    unset USER; envtpl -m error greeting.tpl  # logs an error `map has no entry for key "USER"` and aborts
 
 `test/test.tpl` tests conditional functions as well as loop on environment variables. the `test/test/sh` script compares the output of envtpl with the expected output and can be used as unit test.
 

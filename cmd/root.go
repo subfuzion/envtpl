@@ -98,7 +98,26 @@ func environment(prefix string) map[string]string {
 	return env
 }
 
+// parsebool parses text to bool, if not defined returns default
+func parsebool(value interface{}, defVal bool) bool {
+	text, ok := value.(string)
+	if !ok {
+		return defVal
+	}
+	okayResponses := []string{"yes", "true"}
+	return contains(okayResponses, strings.ToLower(text))
+}
+
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
 func customFuncMap() template.FuncMap {
-	var functionMap = map[string]interface{}{"environment": environment}
+	var functionMap = map[string]interface{}{"environment": environment, "parsebool": parsebool}
 	return template.FuncMap(functionMap)
 }

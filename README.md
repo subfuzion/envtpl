@@ -23,16 +23,17 @@ match the keys of the internal environment variable map object (see example).
 
 ## Usage
 
-    envtpl [-o|--output outfile] [-m|--missing option] [template]
+    envtpl [-o|--output outfile] [-m|--missingkey option] [template]
 
 * If `template` is not provided, `envtpl` reads from `stdin`
 * If `outfile` is not provided, `envtpl` writes to `stdout`
-* If `missing` is unset, `envtpl` follows the default behavior of
+* If `missingkey` is unset or set to either `default` or `invalid`,
+  `envtpl` follows the default behavior of
   [the golang template library](https://golang.org/pkg/text/template/#Template.Option)
   and missing keys in the template will be filled in with the string
-  `<no value>`.  If `missing` is set to `zero`, missing keys will be
+  `<no value>`.  If `missingkey` is set to `zero`, missing keys will be
   filled in with the zero value for their data type (ie: an empty
-  string).  If `missing` is set to `error`, `envtpl` will fail and
+  string).  If `missingkey` is set to `error`, `envtpl` will fail and
   an error returned to the caller.
 
 ## Example

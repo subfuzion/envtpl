@@ -15,6 +15,7 @@ import (
 
 var err error
 var output string
+var missing string
 
 func checkError(err error) {
 	if err != nil {
@@ -54,6 +55,11 @@ var RootCmd = &cobra.Command{
 			w = os.Stdout
 		}
 
+		// set error handling strategy for missing keys
+		if missing != "default" {
+			t = t.Option("missingkey=" + missing)
+		}
+
 		// render the template
 		err := t.Execute(w, env)
 		checkError(err)
@@ -67,6 +73,7 @@ func Execute() {
 
 func init() {
 	RootCmd.Flags().StringVarP(&output, "output", "o", "", "The rendered output file")
+	RootCmd.Flags().StringVarP(&missing, "missing", "m", "default", "Strategy for dealing with missing keys: default, zero or error")
 }
 
 func parse(s string) (*template.Template, error) {

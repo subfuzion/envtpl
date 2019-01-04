@@ -1,0 +1,8 @@
+FROM golang:alpine
+RUN apk add git
+RUN apk add bash
+WORKDIR /go/src/github.com/subfuzion/envtpl
+COPY . .
+RUN go get -d -v ./...
+RUN go install -v ./...
+CMD ./test/test.sh

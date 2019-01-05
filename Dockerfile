@@ -1,10 +1,10 @@
-FROM golang:1.11.4-alpine
-WORKDIR /go/src/github.com/subfuzion/envtpl
+FROM golang:1.11.4
+WORKDIR /app
 COPY . .
-RUN go install github.com/subfuzion/envtpl/...
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o envtpl ./cmd/envtpl/.
 
-FROM alpine:latest
-WORKDIR /usr/local/bin
-COPY --from=0 /go/bin/envtpl .
-ENTRYPOINT [ "envtpl" ]
+FROM scratch
+WORKDIR /app
+COPY --from=0 /app/envtpl .
+ENTRYPOINT [ "./envtpl" ]
 

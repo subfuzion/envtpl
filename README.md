@@ -102,12 +102,19 @@ An image is available on Docker Hub [subfuzion/envtpl](https://hub.docker.com/r/
 
 You can use run a container like this:
 
-	$ printf "Hello {{ .NAME | title }}!\n" | docker run -i --rm -e NAME=world subfuzion/envtpl
-    Hello World!
+    $ echo 'Hello {{ .NAME | title | printf "%s\n" }}' | docker run -i --rm -e NAME=world subfuzion/envtpl
+    Hello World
 
 To build your own local container:
 
 	$ make docker
+
+The final image is based on `scratch` and weighs in at less than 7MB:
+
+```bash
+$ docker images --format "{{ .Repository }}:{{ .Tag }} => {{ .Size }}" subfuzion/envtpl
+subfuzion/envtpl:latest => 6.65MB
+```
 	
 ## Test
 

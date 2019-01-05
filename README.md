@@ -21,6 +21,10 @@ The biggest obvious difference is that `Go` template variables represent a path 
 a data context, so `envtpl` variables will need to be prepended with a leading `.` to
 match the keys of the internal environment variable map object (see example).
 
+## Get it
+
+    $ go get github.com/subfuzion/envtpl/...
+
 ## Usage
 
     envtpl [-o|--output outfile] [-m|--missingkey option] [template]
@@ -64,6 +68,7 @@ Render the template (assume the value of `$USER` is 'mary')
 
 ## Template Functions
 
+### sprig
 In addition to the [standard set of template actions and functions][standard-templates]
 that come with Go, `envtpl` also incorporates [sprig] for additional, commonly used functions.
 
@@ -73,7 +78,7 @@ For example:
 
 In the example, the environment name of the user `mary` is converted to `Mary` by the `title` template function.
 
-### Other functions
+### environment
 
 To mimic the environment function for the original envtpl, an `environment` function allows to filter the environment with a prefix string
 
@@ -81,25 +86,33 @@ To mimic the environment function for the original envtpl, an `environment` func
 
 filters all environment variables starting with TAG_.
 
-## Building an envtpl executable
+For example:
 
-The `make.sh` script can be used to build the `envtpl` executable. If you provide
-the `alpine` argument, it will build a binary for Alpine Linux. This build script
-is intended for Docker workflows; it does not require Go support, only Docker.
+```bash
+printf '{{ range $key, $value := environment "GO"  }}{{ $key }} ("{{ $value }}")\n{{ end }}' | envtpl
+GOPATH ("/Users/tony/go")
+GOROOT ("/usr/local/go")
 
-To build it for another system, export the GOOS and GOARCH environment variables.
+```
 
 ## Building an envtpl Docker image
 
-
 [![Docker Build Status](https://img.shields.io/docker/build/subfuzion/envtpl.svg)](https://hub.docker.com/r/subfuzion/envtpl/)
 
-`build.sh` can be used to create an image for `envtpl` using the provided `Dockerfile`.
-It copies the `envtpl` binary from the repo directory after building it with `make.sh`.
-Because the `Dockerfile` is based on the `alpine` image, be sure to first build
-an executable for Alpine with the `alpine` option (`./build.sh alpine`).
-
 An image is available on Docker Hub [subfuzion/envtpl](https://hub.docker.com/r/subfuzion/envtpl/)
+
+You can use run a container like this:
+
+	$ printf "Hello {{ .NAME | title }}!\n" | docker run -i --rm -e NAME=world subfuzion/envtpl
+    Hello World!
+
+To build your own local container:
+
+	$ make docker
+	
+## Test
+
+    $ make test
 
 ## Similar Tools
 

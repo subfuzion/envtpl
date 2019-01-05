@@ -1,9 +1,7 @@
-FROM golang:alpine
-RUN apk --no-cache add \
-	git \
-	bash
+FROM golang:1.11.4-alpine
+RUN apk --no-cache add bash
 WORKDIR /go/src/github.com/subfuzion/envtpl
 COPY . .
-RUN go get -d -v ./...
-RUN go install -v ./...
+RUN go install github.com/subfuzion/envtpl/...
 CMD ./test/test.sh
+

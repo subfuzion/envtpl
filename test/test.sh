@@ -11,7 +11,7 @@ if ! [ -x "$cmd" ]; then
 fi
 
 echo "*** test with all variables set"
-TAG_REGION=eu-west-1 TAG_DATACENTER=dc1 INTERVAL=2s OUTPUT_INFLUXDB_ENABLED=true HOSTNAME=localhost ${cmd} ${TESTDIR}/test.tpl > ${TMPFILE}
+TAG_REGION=eu-west-1 TAG_DATACENTER=dc1 INTERVAL=2s OUTPUT_INFLUXDB_ENABLED=true HOSTNAME=localhost ${cmd} ${TESTDIR}/test.tpl > ${TMPFILE} 2>/dev/null
 diff "${TESTDIR}/test.txt" "${TMPFILE}" >/dev/null
 if [[ $? -ne 0 ]]; then
 	echo "*** $program does not produce expected result"
@@ -51,7 +51,7 @@ if [[ $? -ne 0 ]]; then
 fi
 
 echo "*** test with missing variable and error behavior"
-TAG_REGION=eu-west-1 TAG_DATACENTER=dc1 INTERVAL=2s OUTPUT_INFLUXDB_ENABLED=true ${cmd} -m error ${TESTDIR}/test.tpl > ${TMPFILE}
+TAG_REGION=eu-west-1 TAG_DATACENTER=dc1 INTERVAL=2s OUTPUT_INFLUXDB_ENABLED=true ${cmd} -m error ${TESTDIR}/test.tpl > ${TMPFILE} 2>&1
 if [[ $? -eq 0 ]]; then
 	echo "*** $program returned no error when it should have!"
 	exit 1

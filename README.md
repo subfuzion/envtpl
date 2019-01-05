@@ -78,6 +78,8 @@ For example:
 
 In the example, the environment name of the user `mary` is converted to `Mary` by the `title` template function.
 
+For reference, see [sprig functions].
+
 ### environment
 
 To mimic the environment function for the original envtpl, an `environment` function allows to filter the environment with a prefix string
@@ -144,4 +146,5 @@ Neither of these two packages appear to conform to the original `envtpl` command
 [mattrobenolt/envtpl]: https://github.com/mattrobenolt/envtpl
 [njx]:                 https://github.com/subfuzion/njx
 [sprig]:               https://github.com/Masterminds/sprig
+[sprig functions]:     http://masterminds.github.io/sprig/
 [standard-templates]:  https://golang.org/pkg/text/template/

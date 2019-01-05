@@ -62,7 +62,11 @@ Render the template (assume the value of `$USER` is 'mary')
     unset USER; envtpl -m zero greeting.tpl    # => "Hello "
     unset USER; envtpl -m error greeting.tpl   # => "map has no entry for key "USER"", aborts
 
-`test/test.tpl` tests conditional functions as well as loop on environment variables. the `test/test/sh` script compares the output of envtpl with the expected output and can be used as unit test.
+	# Use a GitHub gist with curl
+	curl -s https://gist.githubusercontent.com/subfuzion/d5a6e3b7c2577902408069deb1d8e4d7/raw/2e4c0b894e2983411a20ffa5ee84aeafa5c6ebfb/greeting.tpl | envtpl
+	# => Hello, Tony
+
+See `test/test.tpl` for more examples, including conditional functions and looping over environment variables.
 
 ## Template Functions
 
@@ -104,6 +108,11 @@ You can use run a container like this:
 
     $ echo 'Hello {{ .NAME | title | printf "%s\n" }}' | docker run -i --rm -e NAME=world subfuzion/envtpl
     Hello World
+    
+    # using a gist
+    $ curl -s https://gist.githubusercontent.com/subfuzion/d5a6e3b7c2577902408069deb1d8e4d7/raw/2e4c0b894e2983411a20ffa5ee84aeafa5c6ebfb/greeting.tpl | docker run -i -e USER=$USER subfuzion/envtpl
+    Hello, Tony
+
 
 To build your own local container:
 

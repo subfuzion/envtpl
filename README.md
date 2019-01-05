@@ -89,10 +89,9 @@ filters all environment variables starting with TAG_.
 For example:
 
 ```bash
-printf '{{ range $key, $value := environment "GO"  }}{{ $key }} ("{{ $value }}")\n{{ end }}' | envtpl
-GOPATH ("/Users/tony/go")
-GOROOT ("/usr/local/go")
-
+$ echo '{{ range $key, $value := environment "GO"  }}{{ $key }} => {{ $value }} {{ "\n" }}{{ end }}' | envtpl
+GOPATH => /Users/tony/go
+GOROOT => /usr/local/go
 ```
 
 ## Building an envtpl Docker image

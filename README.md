@@ -55,13 +55,11 @@ Render the template (assume the value of `$USER` is 'mary')
     echo "greetings {{.USER}}" | envtpl  # writes "greetings mary" to stdout
 
     envtpl < greeting.tpl > out.txt  # writes "Hello mary" to out.txt
-
-    cat greeting.tpl | envtpl > out.txt  # writes "Hello mary" to out.txt
+    envtpl > out.txt < greeting.tpl  # same thing
+    cat greeting.tpl | envtpl > out.txt  # same thing
 
     unset USER; envtpl greeting.tpl  # writes "Hello <no value>" to stdout
-
     unset USER; envtpl -m zero greeting.tpl  # writes "Hello " to stdout
-
     unset USER; envtpl -m error greeting.tpl  # logs an error `map has no entry for key "USER"` and aborts
 
 `test/test.tpl` tests conditional functions as well as loop on environment variables. the `test/test/sh` script compares the output of envtpl with the expected output and can be used as unit test.

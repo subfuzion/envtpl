@@ -1,6 +1,18 @@
-.PHONY: docker test
+.PHONY: clean docker test
 
-docker:
+SOURCES := $(shell find . -not \( -path vendor -prune \) -name \*.go -print)
+
+bin/envtpl: $(SOURCES)
+	go build -ldflags "-X main.AppVersionMetadata=$$(date -u +%s)" \
+		-o bin/envtpl \
+		./cmd/envtpl/.
+
+build: bin/envtpl
+
+clean:
+	rm -rf bin
+
+image:
 	docker build -t subfuzion/envtpl .
 
 test:

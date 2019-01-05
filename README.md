@@ -107,7 +107,7 @@ You can use run a container like this:
 
 To build your own local container:
 
-	$ make docker
+	$ make image
 
 The final image is based on `scratch` and weighs in at less than 7MB:
 
@@ -117,6 +117,14 @@ subfuzion/envtpl:latest => 6.65MB
 ```
 	
 ## Test
+
+The Dockerfile for the image explicitly runs tests, so if the image
+builds successfully, then the tests passed.
+
+There is an automated build for subfuzion/envtpl on Docker Hub. Docker
+Hub runs tests based on the presence of `docker-compose.test.yml`, so
+there is a `docker-compose.test.file` that simply builds the image and
+runs `envtpl --version`. You can test this yourself:
 
     $ make test
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -14,8 +15,9 @@ import (
 )
 
 // options
-var output string
 var missingKey = "default"
+var output string
+var version bool
 
 func die(err error) {
 	if err != nil {
@@ -28,6 +30,11 @@ var RootCmd = &cobra.Command{
 	Short: "Render go templates from environment variables",
 	Long:  `Render go templates from environment variables.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if version {
+			fmt.Println(Version())
+			os.Exit(0)
+		}
+
 		var t *template.Template
 		var err error
 
@@ -112,8 +119,9 @@ func customFuncMap() template.FuncMap {
 }
 
 func main() {
-	RootCmd.Flags().StringVarP(&output, "output", "o", output, "The rendered output file")
 	RootCmd.Flags().StringVarP(&missingKey, "missingkey", "m", missingKey, "Strategy for dealing with missing keys: [default|zero|error]")
+	RootCmd.Flags().StringVarP(&output, "output", "o", output, "The rendered output file")
+	RootCmd.Flags().BoolVarP(&version, "version", "v", false, "Prints version")
 
 	err := RootCmd.Execute()
 	die(err)

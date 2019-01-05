@@ -1,10 +1,12 @@
 FROM golang:1.11.4
 WORKDIR /app
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o envtpl ./cmd/envtpl/.
+RUN CGO_ENABLED=0 GOOS=linux go build \
+	-ldflags "-X main.AppVersionMetadata=$(date -u +%s)" \
+	-a -installsuffix cgo -o /go/bin/envtpl ./cmd/envtpl/.
+RUN ./test/test.sh
 
 FROM scratch
-WORKDIR /app
-COPY --from=0 /app/envtpl .
-ENTRYPOINT [ "./envtpl" ]
+COPY --from=0 /go/bin/envtpl /bin/envtpl
+ENTRYPOINT [ "/bin/envtpl" ]
 

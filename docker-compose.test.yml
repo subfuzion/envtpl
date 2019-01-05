@@ -2,6 +2,7 @@ version: "2.4"
 
 services:
   sut:
-    build:
-      context: .
-      dockerfile: Dockerfile.test
+    # successful build means tests passed, so just print version to exit
+    build: .
+    command: --version
+

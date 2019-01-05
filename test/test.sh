@@ -59,3 +59,4 @@ fi
 
 echo "*** Tests passed successfully"
 rm "${TMPFILE}"
+

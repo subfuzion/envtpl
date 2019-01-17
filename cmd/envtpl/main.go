@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -110,10 +111,28 @@ func environment(prefix string) map[string]string {
 	return env
 }
 
+func include(file string) string {
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		panic(err.Error())
+	}
+	var t *template.Template
+	if t, err = parse(string(data)); err != nil {
+		panic(err.Error())
+	}
+	var b bytes.Buffer
+	env := readEnv()
+	if err := t.Execute(&b, env); err != nil {
+		panic(err.Error())
+	}
+	return b.String()
+}
+
 // returns custom template functions map
 func customFuncMap() template.FuncMap {
 	var functionMap = map[string]interface{}{
 		"environment": environment,
+		"include":     include,
 	}
 	return template.FuncMap(functionMap)
 }
@@ -126,4 +145,3 @@ func main() {
 	err := RootCmd.Execute()
 	die(err)
 }
-

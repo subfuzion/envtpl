@@ -98,6 +98,18 @@ GOPATH => /Users/tony/go
 GOROOT => /usr/local/go
 ```
 
+### include
+
+This allows files and templates to be included within a template.
+
+For example:
+
+```bash
+$ echo '{{ .USER }}'>include.file
+$ echo 'USER={{ include "include.file" }}' | envtpl
+USER=bob
+```
+
 ## Building an envtpl Docker image
 
 [![Docker Build Status](https://img.shields.io/docker/build/subfuzion/envtpl.svg)](https://hub.docker.com/r/subfuzion/envtpl/)

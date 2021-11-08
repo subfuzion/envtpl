@@ -10,7 +10,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/Masterminds/sprig"
+	"github.com/Masterminds/sprig/v3"
 	"github.com/spf13/cobra"
 )
 
@@ -126,4 +126,3 @@ func main() {
 	err := RootCmd.Execute()
 	die(err)
 }
-

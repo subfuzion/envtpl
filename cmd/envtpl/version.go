@@ -7,7 +7,7 @@ import (
 
 const (
 	AppName         = "envtpl"
-	AppVersionMajor = 1
+	AppVersionMajor = 2
 	AppVersionMinor = 0
 	AppVersionPatch = 0
 	AppVersionBuild = ""
@@ -30,7 +30,6 @@ func Version() string {
 		suffix += "-" + AppVersionMetadata
 	}
 
-	return fmt.Sprintf("%s %d.%d.%d%s (Go runtime %s).\nCopyright (c) 2016-2019, Tony Pujals.",
+	return fmt.Sprintf("%s %d.%d.%d%s (Go runtime %s).\nCopyright (c) 2016-2021, Tony Pujals.",
 		AppName, AppVersionMajor, AppVersionMinor, AppVersionPatch, suffix, runtime.Version())
 }
-
